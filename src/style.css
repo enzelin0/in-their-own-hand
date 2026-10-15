@@ -587,3 +587,58 @@
     .insight .t-price-xl { font-size: var(--fs-price-xl); }
   }
 }
+
+/* Content additions: the owner's wax seal, From → To, the owners' club, Finance thresholds, the closing envelope. */
+@layer components {
+  .seal {
+    display: inline-block; width: 1.15em; height: 1.15em; margin-left: .4em; vertical-align: -.18em; border-radius: 50%;
+    background: radial-gradient(circle at 34% 30%, color-mix(in srgb, var(--accent) 70%, #fff) 0, var(--accent) 52%, color-mix(in srgb, var(--accent) 72%, #000) 100%);
+    box-shadow: inset 0 0 0 .13em rgba(0,0,0,.14), inset 0 0 0 .2em rgba(255,255,255,.12);
+  }
+
+  .fromto { display: flex; flex-direction: column; gap: .3rem; color: #000; }
+  .fromto > span { display: flex; align-items: center; gap: .45rem; }
+  .fromto .bi { color: var(--ink-40); }
+
+  .club { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+  .club__text { display: grid; gap: .5rem; max-width: 44rem; }
+  .club .pill { order: 2; flex: none; }
+  @media (max-width: 47.99rem) { .club { flex-direction: column; align-items: flex-start; } .club .pill { order: 0; } }
+
+  .proof__finance { grid-column: 1 / -1; }
+
+  .ask__envelope { display: none; }
+  @media (min-width: 48rem) {
+    .ask > .ask__meta { grid-row: 1; }
+    .ask > .approve { grid-row: 2; position: relative; z-index: 1; }
+    .ask__envelope {
+      display: block; grid-column: 1 / -1; grid-row: 2; align-self: center; justify-self: center; position: relative;
+      width: min(46rem, 72vw); aspect-ratio: 16 / 9; border-radius: 1rem; background: #f6f6f6; rotate: -3deg; overflow: hidden;
+    }
+    .ask__flap { position: absolute; inset: 0 0 auto; height: 62%; background: #efefef; clip-path: polygon(0 0, 100% 0, 50% 100%); }
+    .ask__envelope .seal { position: absolute; left: 50%; top: 62%; width: 3.2rem; height: 3.2rem; margin: -1.6rem 0 0 -1.6rem; opacity: .35; }
+  }
+}
+@layer motion {
+  /* The seal presses on once the letter has fully revealed. */
+  [data-words] .seal { --s: clamp(0, calc((var(--p) - .9) * 10), 1); opacity: var(--s); scale: calc(1.6 - .6 * var(--s)); }
+}
+
+@layer components {
+  .proof .panel { min-height: 0; }
+  .proof .panel > p:last-child { margin-top: .4rem; }
+}
+
+@layer components {
+  @media (min-width: 48rem) {
+    .ask__envelope { width: min(30rem, 36vw); translate: 25rem -2.5rem; rotate: 7deg; }
+    .ask__envelope .seal { width: 2.6rem; height: 2.6rem; margin: -1.3rem 0 0 -1.3rem; opacity: .6; }
+  }
+}
+
+@layer components {
+  @media (min-width: 48rem) {
+    .ask__envelope { background: none; overflow: visible; border-radius: 0; }
+    .ask__paper { position: absolute; inset: 0; border-radius: 1rem; background: #f6f6f6; overflow: hidden; }
+  }
+}
