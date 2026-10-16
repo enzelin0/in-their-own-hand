@@ -12,6 +12,15 @@ export function initMedia({ heroVideo, beats, onPol }) {
   const about = stage.querySelector('[data-about]');
   const letter = stage.querySelector('[data-letter]');
   const words = initWords(stage.querySelector('[data-words="letter"]'));
+  const envelope = stage.querySelector('[data-envelope]');
+  const env = { in: 0, out: 0 };
+  const applyEnv = () => {
+    setVar(envelope, '--e', env.in);
+    setVar(envelope, '--out', env.out);
+    setClass(envelope, 'is-anim', (env.in > 0 && env.in < 1) || (env.out > 0 && env.out < 1));
+    setClass(envelope, 'is-hidden', env.in <= 0 || env.out >= 1);
+  };
+  applyEnv();
   const easeIO = gsap.parseEase('power2.inOut');
   let tl;
 
@@ -51,7 +60,7 @@ export function initMedia({ heroVideo, beats, onPol }) {
     const f = facts();
     const b = beats();
     const H = f.H;
-    if (reduced) { words.setP(1); return; }
+    if (reduced) { words.setP(1); env.in = 1; applyEnv(); return; }
 
     tl = gsap.timeline({
       defaults: { ease: 'none' },
@@ -67,9 +76,11 @@ export function initMedia({ heroVideo, beats, onPol }) {
     leg(b.pol[0] * H, (b.pol[1] - b.pol[0]) * H, (v) => onPol(v));
     leg(f.yAe - 0.1 * H, 0.5 * H, (v) => setVar(media, '--g2', easeIO(v)));
     leg(f.yAe + 0.4 * H, 0.4 * H, (v) => { setVar(media, '--dis', v); setClass(media, 'is-dissolving', v > 0 && v < 1); });
-    leg(f.yL - 0.2 * H, 1.0 * H, (v) => words.setP(v));
+    // The sealed envelope lands first; the line under it reveals word by word.
+    leg(f.yL - 0.45 * H, 0.55 * H, (v) => { env.in = v; applyEnv(); });
+    leg(f.yL - 0.05 * H, 0.8 * H, (v) => words.setP(v));
     leg(f.yL + 0.5 * H, 1.4 * H, (v) => setVar(row, '--par', v));
-    leg(f.yL + 1.3 * H, 0.4 * H, (v) => words.setOut(v));
+    leg(f.yL + 1.3 * H, 0.4 * H, (v) => { words.setOut(v); env.out = v; applyEnv(); });
     leg(f.yL + 1.6 * H, 0.8 * H, (v) => setVar(row, '--zoom', easeIO(v)));
     tl.to({}, { duration: 0.001 }, f.yLe);
   }

@@ -5,7 +5,7 @@ import { getScroll, setAnchorResolver } from './scroll.js';
 // Presenter navigation. The page has resting points ("stops") placed where every reveal on
 // screen has finished. Keys glide to the next one; free scrolling is pulled onto one once you
 // are most of the way there.
-export function initNav({ header, media, fleet }) {
+export function initNav({ header, media, fleet, notes }) {
   const H = () => innerHeight;
   const q = (s) => document.querySelector(s);
   const maxY = () => document.documentElement.scrollHeight - H();
@@ -129,6 +129,7 @@ export function initNav({ header, media, fleet }) {
       onToggle: (s) => {
         if (!s.isActive) return;
         header.setNow(`${el.dataset.slide} · ${el.dataset.speaker}`);
+        notes?.setSlide(el.dataset.slide);
         header.setAct(actOf(+el.dataset.slide));
       },
     });

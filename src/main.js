@@ -1,5 +1,6 @@
 import '@fontsource/inter-tight/latin-400.css';
 import '@fontsource/inter-tight/latin-500.css';
+import '@fontsource/la-belle-aurore/latin-400.css';
 import 'bootstrap-icons/font/bootstrap-icons.min.css';
 import './style.css';
 
@@ -19,6 +20,7 @@ import { initCatalog } from './lib/catalog.js';
 import { initSlider } from './lib/slider.js';
 import { initReveals } from './lib/reveals.js';
 import { initNav } from './lib/nav.js';
+import { initNotes } from './lib/notes.js';
 
 ScrollTrigger.config({ ignoreMobileResize: true });
 applyBeats();
@@ -35,7 +37,7 @@ const fleet = initFleet();
 const catalog = initCatalog({ fleet });
 initSlider({ fleet, onChange: (i) => catalog.swap(i), onReset: () => catalog.reset(0) });
 initReveals();
-initNav({ header, media, fleet });
+initNav({ header, media, fleet, notes: initNotes() });
 
 matchMedia('(max-width: 767px)').addEventListener('change', () => { applyBeats(); ScrollTrigger.refresh(); });
 

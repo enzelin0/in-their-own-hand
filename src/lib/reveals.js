@@ -92,9 +92,11 @@ export function initReveals() {
 
   // Bars grow from the left once their card is in.
   $$('[data-grow]').forEach((el, i, all) => {
-    const siblings = all.filter((s) => s.parentElement === el.parentElement);
+    // Budget bars grow one row after another; paired bars elsewhere follow each other.
+    const row = el.closest('.bars__row');
+    const order = row ? [...row.parentElement.children].indexOf(row) * 0.05 : all.filter((s) => s.parentElement === el.parentElement).indexOf(el) * 0.08;
     gsap.fromTo(el, { scaleX: 0 }, {
-      scaleX: 1, duration: 1.3, ease: 'outExpo', delay: 0.25 + siblings.indexOf(el) * 0.08,
+      scaleX: 1, duration: 1.3, ease: 'outExpo', delay: 0.25 + order,
       scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' },
     });
   });
@@ -192,25 +194,9 @@ export function initReveals() {
 function initApproval() {
   const card = document.querySelector('[data-approve]');
   const sig = card.querySelector('[data-sig]');
-  const btn = card.querySelector('[data-approve-btn]');
-  const label = btn.querySelector('[data-approve-label]');
-  const icon = btn.querySelector('.bi');
   const len = sig.getTotalLength();
   gsap.set(sig, { strokeDasharray: len, strokeDashoffset: len });
-  // The signature starts on arrival and waits, two-thirds done, for the click.
-  const draw = gsap.timeline({ paused: true }).to(sig, { strokeDashoffset: len * 0.35, duration: 1.8, ease: 'power2.inOut', delay: 0.5 });
-  onArrive(card, draw);
-
-  btn.addEventListener('click', () => {
-    const on = card.classList.toggle('is-approved');
-    gsap.timeline({ defaults: { ease: 'magic' } })
-      .to([label, icon], { autoAlpha: 0, y: '-.4em', duration: 0.18 })
-      .add(() => {
-        label.textContent = on ? 'Approved' : 'Approve';
-        icon.className = `bi ${on ? 'bi-check2' : 'bi-arrow-right'}`;
-      })
-      .fromTo([label, icon], { autoAlpha: 0, y: '.4em' }, { autoAlpha: 1, y: 0, duration: 0.35, clearProps: 'transform,opacity,visibility' });
-    gsap.fromTo(btn, { scale: 0.94 }, { scale: 1, duration: 0.6, ease: 'outExpo', clearProps: 'transform' });
-    gsap.to(sig, { strokeDashoffset: on ? 0 : len * 0.35, duration: 1.2, ease: 'power2.inOut', overwrite: true });
-  });
+  // The signature writes itself on the line once the card has settled.
+  const draw = gsap.timeline({ paused: true }).to(sig, { strokeDashoffset: 0, duration: 2.2, ease: 'power2.inOut', delay: 0.6 });
+  onArrive(card, draw, 'top 80%');
 }
