@@ -881,3 +881,70 @@
 @layer components {
   @media (max-width: 47.99rem) { .badge { white-space: normal; height: auto; padding-block: .5rem; flex-wrap: wrap; } }
 }
+
+/* 01 — the envelope opens and the owner's letter comes out */
+@layer components {
+  .env { background: none; overflow: visible; }
+  .env::before, .env::after { content: none; }
+  .env__body { position: absolute; inset: 0; border-radius: .55rem; overflow: hidden; }
+  .env__inside { position: absolute; inset: 0; z-index: 0; background: linear-gradient(180deg, #ddd1bb, #e6dcc8); }
+  .env__front {
+    position: absolute; inset: 0; z-index: 2;
+    background: linear-gradient(160deg, #f4eee2, #ebe2d1);
+    clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+  }
+  .env__front::before { content: ''; position: absolute; inset: 0; background: #e8dfcd; clip-path: polygon(0 100%, 50% 52%, 100% 100%); }
+  .env__front::after { content: ''; position: absolute; inset: 0; background: #f1eadd; clip-path: polygon(0 0, 47% 56%, 0 100%); }
+  .env__sheet {
+    position: absolute; left: 7%; right: 7%; top: 6%; bottom: 12%; z-index: 1; border-radius: .25rem;
+    background: #fbf8f1 repeating-linear-gradient(transparent 0 .9rem, rgba(120,90,50,.13) .9rem calc(.9rem + 1px)) 0 1.4rem / 100% calc(100% - 2rem) no-repeat;
+  }
+  .env__flap {
+    position: absolute; inset: 0 0 auto; height: 58%; z-index: 3;
+    background: linear-gradient(180deg, #f6f0e5, #e7dcc7);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: 50% 0;
+  }
+  .letter__envelope.is-open .env__flap { z-index: 0; background: linear-gradient(0deg, #e9dfcc, #dfd3bd); }
+  .env__seal { z-index: 4; }
+
+  .letter__paper {
+    position: absolute; left: 50%; top: 45svh; z-index: 2; pointer-events: none;
+    width: min(36rem, 88vw); padding: clamp(1.4rem, 3.4svh, 2.4rem) clamp(1.4rem, 3vw, 2.6rem);
+    border-radius: .35rem; background: #fbf8f1; rotate: -1.5deg;
+    box-shadow: 0 50px 80px -40px rgba(40, 25, 10, .35), 0 2px 8px rgba(40, 25, 10, .08);
+  }
+  .letter__text { display: grid; gap: .45em; font-size: clamp(1.05rem, 2.75svh, 1.55rem); line-height: 1.42; color: #231d16; }
+  .letter__sign { text-align: right; margin-top: .2em; }
+}
+@layer motion {
+  .letter__envelope {
+    --open: 0; --hide: 0;
+    opacity: calc(var(--e) * (1 - var(--hide)) * (1 - var(--out)));
+    translate: -50% calc(-50% + (1 - var(--e)) * 5svh + var(--hide) * 5svh - var(--out) * 2rem);
+    scale: calc((.94 + .06 * var(--e)) * (1 - .06 * var(--hide)));
+  }
+  .letter__envelope.is-anim { filter: blur(calc((1 - var(--e)) * 10px + var(--hide) * 8px + var(--out) * 10px)); }
+  /* Seal breaks first, then the flap opens, then the letter peeks out. */
+  .env__seal { --sb: clamp(0, calc(var(--open) / .3), 1); opacity: calc(1 - var(--sb)); scale: calc(1 + .3 * var(--sb)); filter: blur(calc(var(--sb) * 6px)); }
+  .env__flap { transform: perspective(70rem) rotateX(calc(clamp(0, calc((var(--open) - .2) / .5), 1) * 180deg)); }
+  .env__sheet { translate: 0 calc(clamp(0, calc((var(--open) - .5) / .5), 1) * -46%); }
+
+  .letter__paper {
+    --c: 0; --co: 0;
+    opacity: calc(var(--c) * (1 - var(--co)));
+    translate: -50% calc(-50% + (1 - var(--c)) * 14svh + var(--co) * 10svh);
+    scale: calc((.9 + .1 * var(--c)) * (1 - .1 * var(--co)));
+  }
+  .letter__paper.is-anim { filter: blur(calc((1 - var(--c)) * 10px + var(--co) * 10px)); }
+  .letter__paper.is-hidden { visibility: hidden; }
+  /* The letter's words live inside the paper, not centred on the screen. */
+  .letter__text[data-words] { position: static; translate: none; opacity: 1; }
+}
+
+@layer components {
+  @media (min-width: 48rem) {
+    .letter__paper { width: min(40rem, 88vw); }
+    .letter__text { font-size: clamp(1.05rem, 3.1svh, 1.6rem); }
+  }
+}

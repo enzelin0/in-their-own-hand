@@ -32,7 +32,9 @@ export function initNav({ header, media, fleet, notes }) {
   const named = {
     top: () => 0,
     about: () => media.facts().yA + 0.3 * H(),
-    letter: () => media.facts().yL + 0.85 * H(),
+    letter: () => media.facts().yL + 0.15 * H(),
+    reading: () => media.facts().yL + 1.85 * H(),
+    line: () => media.facts().yL + 3.0 * H(),
     build: () => pageTop(q('[data-build]')) + 0.3 * H(),
     fleetWords: () => { const f = fleet.facts(); return f.yB + 1.02 * f.H; },
     catalog: () => fleet.facts().yCe,
@@ -40,7 +42,7 @@ export function initNav({ header, media, fleet, notes }) {
   };
 
   const stops = () => {
-    const ys = [named.top(), named.about(), named.letter()];
+    const ys = [named.top(), named.about(), named.letter(), named.reading(), named.line()];
     document.querySelectorAll('.slide').forEach((el) => {
       ys.push(...slideStops(el));
       if (el.dataset.slide === '04') ys.push(named.build(), named.fleetWords(), named.catalog());
@@ -77,7 +79,7 @@ export function initNav({ header, media, fleet, notes }) {
 
   addEventListener('keydown', (e) => {
     if (e.altKey || e.metaKey || e.ctrlKey) return;
-    if (e.key === ' ' && e.target.closest('button, a, input, textarea')) return;
+    if (e.key === ' ' && e.target instanceof Element && e.target.closest('button, a, input, textarea')) return;
     const carousel = fleet.active();
     const fwd = ['ArrowDown', 'PageDown', ' '].includes(e.key) || (e.key === 'ArrowRight' && !carousel);
     const back = ['ArrowUp', 'PageUp'].includes(e.key) || (e.key === 'ArrowLeft' && !carousel);

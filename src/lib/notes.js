@@ -35,7 +35,7 @@ export function initNotes() {
 
   addEventListener('keydown', (e) => {
     if (e.key.toLowerCase() !== 'n' || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (e.target.closest('input, textarea, [contenteditable]')) return;
+    if (e.target instanceof Element && e.target.closest('input, textarea, [contenteditable]')) return;
     panel.hidden = !panel.hidden;
     if (!panel.hidden) render();
   });
