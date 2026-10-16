@@ -948,3 +948,65 @@
     .letter__text { font-size: clamp(1.05rem, 3.1svh, 1.6rem); }
   }
 }
+
+/* Page numbers on every screen: transition screens carry their slide's number. */
+@layer components {
+  .scene__num { position: absolute; left: var(--pad-x); top: 17svh; z-index: 30; margin: 0; pointer-events: none; }
+  @media (min-width: 48rem) {
+    /* Leave room above the video slot and slide 5's intro for the number. */
+    .about__slot, .about__copy, .build__lead { margin-top: 27svh; height: 45svh; }
+    .ask { position: relative; }
+    .ask > .ask__meta { position: absolute; left: var(--pad-x); top: 20svh; margin: 0; text-align: left; align-items: flex-start; }
+  }
+  @media (max-width: 47.99rem) { .scene__num { display: none; } }
+
+  .slide__label { margin-top: .6rem; }
+  .slide__label:first-child { margin-top: 0; }
+  .role { min-height: 9.5rem; }
+}
+
+@layer components {
+  .scene__num { top: 14svh; }
+  @media (min-width: 48rem) {
+    .about__slot, .about__copy, .build__lead { margin-top: 31svh; height: 43svh; }
+    .build__lead { justify-content: flex-end; }
+  }
+}
+
+@layer components {
+  /* Without a grid area, the absolute number measures from the slide itself. */
+  @media (min-width: 48rem) { .ask > .ask__meta { grid-row: auto; grid-column: auto; } }
+}
+
+@layer components {
+  @media (min-width: 48rem) and (max-height: 820px) {
+    .hurdle { min-height: 6rem; gap: .8rem; }
+    .role { min-height: 7.5rem; }
+    .signal { min-height: 0; }
+    .signal .t-price-xl { font-size: var(--fs-price-xl); }
+    .slide__label { margin-top: .2rem; }
+  }
+  .role .pill { white-space: normal; height: auto; min-height: 2rem; padding-block: .3rem; }
+}
+
+@layer components {
+  @media (min-width: 48rem) and (max-height: 820px) {
+    .role { min-height: 6.5rem; gap: 1rem; }
+    .hurdle { min-height: 5.5rem; padding-block: 1.2rem; }
+  }
+}
+
+@layer components {
+  /* Stacked always, so the slide's height doesn't change while the numbers count up. */
+  .signal__stats { flex-direction: column; gap: 1rem; }
+}
+
+@layer components {
+  @media (min-width: 48rem) and (max-height: 820px) {
+    #gap { row-gap: 1.5rem; }
+    #gap .role { min-height: 5.5rem; }
+    /* Side by side without wrapping, so the height is fixed regardless of the count-up. */
+    .signal__stats { flex-direction: row; flex-wrap: nowrap; gap: 1rem; }
+    .signal .stat { max-width: none; flex: 1 1 0; min-width: 0; }
+  }
+}

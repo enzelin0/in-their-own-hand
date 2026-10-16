@@ -25,7 +25,8 @@ export function initNav({ header, media, fleet, notes }) {
     const ys = [first];
     for (let y = first + 0.75 * H(); y < last - 0.1 * H(); y += 0.75 * H()) ys.push(y);
     if (last > first + 0.08 * H()) ys.push(last);
-    if (words) ys.push(centreOn(words));
+    // A closing line gets its own rest only when it sits further down than the slide's first rest.
+    if (words && centreOn(words) > first + 0.1 * H()) ys.push(centreOn(words));
     return ys;
   };
 
